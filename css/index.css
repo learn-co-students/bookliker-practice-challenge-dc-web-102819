@@ -2,3 +2,32 @@ body {
 	display: grid;
 	grid-template-columns: 2fr 8fr
 }
+
+ul {
+	list-style: none;
+}
+
+ul#likes li {
+	margin: 0px;
+	padding: 0px;
+	border: none;
+}
+
+li {
+	border: 1px solid #000000;
+	border-radius: 25px;
+	padding: 30px;
+	margin-bottom: 20px;
+	/*width: 2fr 8fr;*/
+	/*grid-column: span;*/
+}
+
+#show-panel.enabled {
+	border: 1px solid #000000;
+	border-radius: 25px;
+	padding: 30px;
+	margin: 20px;
+	text-align: center;
+	/*width: 2fr 8fr;*/
+	/*grid-column: span;*/
+}
