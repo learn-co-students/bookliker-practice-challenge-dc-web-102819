@@ -1,3 +1,8 @@
+var session = {
+	id: 1,
+	username: "pouros"
+}
+
 document.addEventListener("DOMContentLoaded", function() {
 	console.log("connected")
 	getBooks()
@@ -37,8 +42,8 @@ function clearInnerHTML(selector) {
 	return element
 }
 
-function showBook(event) {
-	let bookId = Number(event.currentTarget.id.split('-')[1])
+function showBook(event, book_id) {
+	let bookId = event ? Number(event.currentTarget.id.split('-')[1]) : Number(book_id)
 
 	fetch(`http://localhost:3000/books/${bookId}`)
 		.then(response => response.json())
@@ -56,6 +61,7 @@ function showBook(event) {
 			`
 
 			let likeContainer = document.createElement('div')
+			likeContainer.id = `book-${book.id}`
 			showPanel.appendChild(likeContainer)
 
 			let buttonLike = document.createElement('button')
@@ -78,9 +84,64 @@ function showBook(event) {
 		.catch(error => console.log(error.message))
 }
 
-function likeBook(event) {
-	console.log(event.currentTarget.parentElement)
+function getCurrentLikeList(id) {
+	//get current like list
+	let likedUserList = {
+		users: [
+		]
+	}
+
+	fetch(`http://localhost:3000/books/${id}`)
+		.then(res => res.json())
+		.then(json => {
+			json.users.forEach(user => {
+				likedUserList.users.push(user)
+			})
+			likedUserList.users.push(session)
+			return likedUserList
+		})
+		.catch(e => console.log(e.message))
 }
 
+function likeBook(event) {
+	let bookId = event.currentTarget.parentElement.id.split('-')[1]
+
+	//get current like list
+	let likedUserList = {
+		users: [
+		]
+	}
+
+	fetch(`http://localhost:3000/books/${bookId}`)
+		.then(res => res.json())
+		.then(json => {
+			//add existing likes to list
+			json.users.forEach(user => {
+				likedUserList.users.push(user)
+			})
+			//add new like to list
+			likedUserList.users.push(session)
+
+			let configOptions = {
+			    method: "PATCH",
+			    headers: {
+			      "Content-Type": "application/json",
+			      "Accept": "application/json"
+			    },
+			    body: JSON.stringify(likedUserList)
+			}
+
+			fetch(`http://localhost:3000/books/${bookId}`,configOptions)
+				.then(response => response.json())
+				.then(book => {
+					//function expects an event, setting to false
+					showBook(false,book.id)
+				})
+				.catch(error => console.log(error.message))
+		})
+		.catch(e => console.log(e.message))
 
 
+
+	let bookLikes = getCurrentLikeList(bookId)
+}
