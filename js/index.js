@@ -25,6 +25,7 @@ function renderBooks(book) {
 
 function showBookInfo(book) {
     let showPanel = document.getElementById('show-panel')
+    showPanel.innerHTML = ''
     let header = document.createElement('h2')
     let pTag = document.createElement('p')
     let img = document.createElement('img')
