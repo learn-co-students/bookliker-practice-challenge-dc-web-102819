@@ -29,12 +29,15 @@ function showBookInfo(book) {
     let pTag = document.createElement('p')
     let img = document.createElement('img')
     let bookButton = document.createElement('button')
+    bookButton.innerText = `Like this book`
+    bookButton.addEventListener('click', () => likeThisBook(book))
     header.innerText = `${book.title}`
     img.src = `${book.img_url}`
     pTag.innerText = `${book.description}`
     showPanel.appendChild(header)
     showPanel.appendChild(img)
     showPanel.appendChild(pTag)
+    showPanel.appendChild(bookButton)
     book.users.forEach(displayUserNames)
 }
 
@@ -44,3 +47,43 @@ function displayUserNames(user) {
     usersTag.innerText = `Username: ${user.username}`
     showPanel.appendChild(usersTag)
 }
+
+
+function likeThisBook(book) {
+   const currentUsers = book.users
+   currentUsers.push({'id': 1, 'username': 'pouros'})
+   console.log(currentUsers)
+    const configOptions = {
+        method: 'PATCH',
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        },
+        body: JSON.stringify({users: currentUsers})
+    }
+    fetch(`http://localhost:3000/books/${book.id}`, configOptions)
+    .then(response => response.json())
+    .then(data => displayUserNames(data))
+}
+
+
+
+// function increaseLikes(toyId, likesP) {
+//     const likeCount =  parseInt(likesP.innerText)
+  
+//     const configOptions = {
+  
+//       method: 'PATCH',
+//         headers: {
+          
+//           "Content-Type": "application/json",
+//           "Accept": "application/json"
+  
+//         },
+//         body: JSON.stringify({likes: likeCount + 1 })
+//     }
+  
+//     fetch(`http://localhost:3000/toys/${toyId}`, configOptions)
+//     .then(response => response.json())
+//     .then(toy => displayNewLikes(toy, likesP))
+//   }
